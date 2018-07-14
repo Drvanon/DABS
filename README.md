@@ -11,7 +11,8 @@ for the generating of the file.
     * `inlcudes`
     * `search_directories`
     * `libraries`
-3. Run dabs.py
+3. `$ dabs.py`
+4. `$ ninja`
 
 ## History
 When creating [DES](http://github.com/Drvanon/DES), we found
