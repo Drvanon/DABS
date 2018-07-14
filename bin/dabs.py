@@ -11,13 +11,15 @@ Usage:
     configure.py [options] [-D var[=val]]... [-I dir]...
 
 Options:
-  --native           Enable native optimizations.
-  -d, --debug        Compile with debug.
-  -D var=val         Define variable.
-  -o file            Output ninja file [default: build.ninja].
-  -h, --help         Show this screen.
-  -c file            Configure file [default: configure.yaml]
-  -l library_name    Build as a library
+  --native          Enable native optimizations.
+  -d, --debug       Compile with debug.
+  -D var=val        Define variable.
+  -o file           Output ninja file [default: build.ninja].
+  -h, --help        Show this screen.
+  -c file           Configure file [default: configure.yaml]
+  -l library_name   Build as a library
+  -s source_dir     Build from source dir [default: src]
+  -b build_file     Build to this file (not compatible with -l) [default: bin/main]
 """
 
 def build_files(n, args):
@@ -30,7 +32,7 @@ def build_files(n, args):
     # precompiled_header = "src/precompile.h.gch"
 
     objects = []
-    for root, dirnames, filenames in os.walk("src"):
+    for root, dirnames, filenames in os.walk(args["-s"]):
         for filename in fnmatch.filter(filenames, "*.c"):
             src = os.path.join(root, filename)
             obj = os.path.join("obj", os.path.splitext(src)[0] + obj_ext)
@@ -43,8 +45,8 @@ def build_files(n, args):
         n.build(path_name, "liblink", objects)
         n.default(path_name)
     else:
-        n.build("bin/main" + exe_ext, "clink", objects)
-        n.default("bin/main" + exe_ext)
+        n.build(args["-b"] + exe_ext, "clink", objects)
+        n.default(args["-b"] + exe_ext)
 
 
 def build_rules(n, args, conf):
