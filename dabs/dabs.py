@@ -113,7 +113,7 @@ try:
     import ninja_syntax
 except ImportError:
     msg = """You are missing one or more dependencies, install using:
-    {} -m pip install --user docopt ninja-syntax
+    {} -m pip install --user docopt ninja-syntax pyyaml
 If you are using an old version of Python, and don't have pip,
 download https://bootstrap.pypa.io/get-pip.py and run it."""
 
