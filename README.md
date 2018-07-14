@@ -1,5 +1,6 @@
 # DABS - Dorstijn Automated Building System
-DABS is an automated building system for C/CPP projects. It
+DABS is an automated building system for C/C++ projects.
+(Currently the cpp part is still uder construction.) It
 uses [ninja](https://ninja-build.org/) as a back-end to actually
 do the building of the files, while providing a cli interface
 for the generating of the file.
