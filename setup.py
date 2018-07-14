@@ -15,6 +15,7 @@ setup(name='DABS',
     url='https://github.com/Drvanon/DABS',
     license='MIT',
     install_requires=['PyYAML', 'docopt', 'ninja-syntax'],
-    packages=['dabs'],
+    packages=[],
+    scripts=['bin/dabs.py'],
     zip_safe=False
     )
