@@ -64,6 +64,6 @@ dkms.conf
 .ninja_deps
 .ninja_log
 
-dabs/__pycache__
+bin/__pycache__
 dist/
 MANIFEST
