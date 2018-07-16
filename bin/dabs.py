@@ -22,6 +22,7 @@ Options:
   -b build_file     Build to this file (not compatible with -l) [default: bin/main]
 """
 
+
 def build_files(n, args):
     exe_ext = ".exe" if os.name == "nt" else ""
     obj_ext = ".o"
@@ -32,6 +33,8 @@ def build_files(n, args):
     # precompiled_header = "src/precompile.h.gch"
 
     objects = []
+
+    # C
     for root, dirnames, filenames in os.walk(args["-s"]):
         for filename in fnmatch.filter(filenames, "*.c"):
             src = os.path.join(root, filename)
@@ -40,12 +43,20 @@ def build_files(n, args):
             # n.build(obj, "cxx", src, precompiled_header)
             objects.append(obj)
 
+    # C++
+    for filename in fnmatch.filter(filenames, "*.cpp"):
+        src = os.path.join(root, filename)
+        obj = os.path.join("obj", os.path.splitext(src)[0] + obj_ext)
+        n.build(obj, "cxx", src)
+        # n.build(obj, "cxx", src, precompiled_header)
+        objects.append(obj)
+
     if args["-l"]:
         path_name = "lib/lib" + args["-l"] + ".a"
         n.build(path_name, "liblink", objects)
         n.default(path_name)
     else:
-        n.build(args["-b"] + exe_ext, "clink", objects)
+        n.build(args["-b"] + exe_ext, "cxxlink", objects)
         n.default(args["-b"] + exe_ext)
 
 
@@ -66,7 +77,7 @@ def build_rules(n, args, conf):
     defines = [" -D" + d for d in args["-D"]]
     includes = [" -I" + i for i in conf["includes"]]
     search_directories = [" -L" + L for L in conf["search_directories"]]
-    libraries =  [" -l" + l for l in conf["libraries"]]
+    libraries = [" -l" + l for l in conf["libraries"]]
 
     libflags = ""
     libflags += "".join(defines)
@@ -75,10 +86,6 @@ def build_rules(n, args, conf):
     cflags = "-std=c99 -Wall -pedantic -fwrapv"
     cflags += "".join(defines)
     cflags += "".join(includes)
-
-    clinkflags = ""
-    clinkflags += "".join(search_directories)
-    clinkflags += "".join(libraries)
 
     cxxflags = "-std=c++11 -Wall -pedantic -fwrapv"
     cxxflags += "".join(defines)
@@ -89,9 +96,8 @@ def build_rules(n, args, conf):
     cxxlinkflags += "".join(libraries)
 
     n.variable("cflags", cflags)
-    n.variable("clinkflags", clinkflags)
     n.variable("cxxflags", cxxflags)
-    n.variable("cxxlinkflags", clinkflags)
+    n.variable("cxxlinkflags", cxxlinkflags)
 
     n.rule("cc",
            "$cc $xtype -MMD -MF $out.d $optflags $dbgflags $cflags -c $in -o $out",
@@ -101,10 +107,9 @@ def build_rules(n, args, conf):
            "$cxx $xtype -MMD -MF $out.d $optflags $dbgflags $cxxflags -c $in -o $out",
            depfile="$out.d")
 
-    n.rule("clink", "$cc $optflags $dbgflags $in $clinkflags -o $out")
     n.rule("cxxlink", "$cxx $optflags $dbgflags $in $cxxlinkflags -o $out")
 
-    n.rule("liblink", "ar rs $out $linkflags $in")
+    n.rule("liblink", "ar rs $out $libflags $in")
 
 
 # Everything below this line is dependency boilerplate.
@@ -146,7 +151,8 @@ else:
 
 
 def is_exe(path):
-    return os.path.exists(path) and os.access(path, os.F_OK | os.X_OK) and not os.path.isdir(path)
+    return os.path.exists(path) and os.access(
+        path, os.F_OK | os.X_OK) and not os.path.isdir(path)
 
 has_ninja = any(is_exe(os.path.join(d, f)) for d in path for f in files)
 
