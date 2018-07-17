@@ -1,18 +1,23 @@
 # DABS - Dorstijn Automated Building System
 DABS is an automated building system for C/C++ projects.
-(Currently the cpp part is still uder construction.) It
-uses [ninja](https://ninja-build.org/) as a back-end to actually
+It uses [ninja](https://ninja-build.org/) as a back-end to actually
 do the building of the files, while providing a cli interface
 for the generating of the file.
 
 ## Usage
 1. Create a 'configure.yaml' in your projects directory.
 2. Make sure that at least the following mappings:
-    * `inlcudes`
-    * `search_directories`
-    * `libraries`
+    * `includes: []`
+    * `search_directories: []`
+    * `libraries: []`
 3. `$ dabs.py`
 4. `$ ninja`
+
+## Setting configure.yaml
+As mentioned before `includes, search_directories, libraries` are
+manditory lists in `configure.yaml`. Optional added values are:
+* cc    (The cc compiler to be used, default: gcc)
+* cxx   (The cxx compiler to be used, default: g++)
 
 ## History
 When creating [DES](http://github.com/Drvanon/DES), we found

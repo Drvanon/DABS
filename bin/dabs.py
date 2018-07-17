@@ -8,7 +8,8 @@ import yaml
 
 __doc__ = """Build configurator.
 Usage:
-    configure.py [options] [-D var[=val]]... [-I dir]...
+    configure.py [options] [-D var[=val]]...
+    configure.py [options] [-D var[=val]]... compiler ( cc | gcc | clang )
 
 Options:
   --native          Enable native optimizations.
@@ -50,8 +51,8 @@ def build_files(n, args):
 
 
 def build_rules(n, args, conf):
-    n.variable("cc", "gcc")
-    n.variable("cxx", "g++")
+    n.variable("cc", conf.get("cc", "gcc"))
+    n.variable("cxx", conf.get("cxx", "g++"))
 
     if args["--debug"]:
         n.variable("dbgflags", "-ggdb")
