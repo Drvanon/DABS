@@ -5,19 +5,22 @@ do the building of the files, while providing a cli interface
 for the generating of the file.
 
 ## Usage
-1. Create a 'configure.yaml' in your projects directory.
-2. Make sure that at least the following mappings:
-    * `includes: []`
-    * `search_directories: []`
-    * `libraries: []`
-3. `$ dabs.py`
-4. `$ ninja`
+Some options and and parts in the configuration file overlap,
+where ever this is the case the arguments provided to the program
+will override the settings in the configuration file.
 
 ## Setting configure.yaml
-As mentioned before `includes, search_directories, libraries` are
+As mentioned before  are
 manditory lists in `configure.yaml`. Optional added values are:
-* cc    (The cc compiler to be used, default: gcc)
-* cxx   (The cxx compiler to be used, default: g++)
+`includes, search_directories, libraries`
+
+| includes              | List of folders to include                    |
+| search\_directories   | List of folders where libraries are located   |
+| libraries             | List of libraries to add                      |
+| cc                    | The cc compiler to be used, default: gcc      |
+| cxx                   | The cxx compiler to be used, default: g++     |
+| source                | Source folder, overridden by -s               |
+| build\_file           | File that will be build by the program        |
 
 ## History
 When creating [DES](http://github.com/Drvanon/DES), we found

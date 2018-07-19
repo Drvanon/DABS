@@ -19,8 +19,8 @@ Options:
   -h, --help        Show this screen.
   -c file           Configure file [default: configure.yaml]
   -l library_name   Build as a library
-  -s source_dir     Build from source dir [default: src]
-  -b build_file     Build to this file (not compatible with -l) [default: bin/main]
+  -s source_dir     Build from source dir (default: src)
+  -b build_file     Build to this file (not compatible with -l) (default: bin/main)
 """
 
 
@@ -36,8 +36,11 @@ def build_files(n, args):
 
     objects = []
 
+    source_folder = args["-s"] if args["-s"] else  conf.get("source", "src")
+    build_file = args["-b"] if args["-b"] else conf.get("build_file", "bin/main")
+
     # C
-    for root, dirnames, filenames in os.walk(args["-s"]):
+    for root, dirnames, filenames in os.walk(source_folder):
         for filename in fnmatch.filter(filenames, "*.c"):
             src = os.path.join(root, filename)
             obj = os.path.join("obj", os.path.splitext(src)[0] + obj_ext)
@@ -47,7 +50,7 @@ def build_files(n, args):
             objects.append(obj)
 
     # C++
-    for root, dirnames, filenames in os.walk(args["-s"]):
+    for root, dirnames, filenames in os.walk(source_folder):
         for filename in fnmatch.filter(filenames, "*.cpp"):
             src = os.path.join(root, filename)
             obj = os.path.join("obj", os.path.splitext(src)[0] + obj_ext)
@@ -61,8 +64,8 @@ def build_files(n, args):
         n.build(path_name, "liblink", objects)
         n.default(path_name)
     else:
-        n.build(args["-b"] + exe_ext, "cxxlink", objects)
-        n.default(args["-b"] + exe_ext)
+        n.build(build_file + exe_ext, "cxxlink", objects)
+        n.default(build_file + exe_ext)
 
 
 def build_rules(n, args, conf):
