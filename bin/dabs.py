@@ -73,15 +73,16 @@ def build_rules(n, args, conf):
     n.variable("cc", conf.get("cc", "gcc"))
     n.variable("cxx", conf.get("cxx", "g++"))
 
+    native_flag = " -march=native" if args["--native"] else ""
+
     if args["--debug"]:
         n.variable("dbgflags", "-ggdb")
-        debug_flag = ""
+        debug_flag = "-g"
+        n.variable("optflags", native_flag + debug_flag)
     else:
         n.variable("dbgflags", "")
         debug_flag = " -DNDEBUG"
-
-    native_flag = " -march=native" if args["--native"] else ""
-    n.variable("optflags", "-O2" + native_flag + debug_flag)
+        n.variable("optflags", "-O2" + native_flag + debug_flag)
 
     defines = [" -D" + d for d in args["-D"]]
     includes = [" -I" + i for i in conf.get("includes", [])]
